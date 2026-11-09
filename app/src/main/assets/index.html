@@ -18,6 +18,7 @@
   --fg: #16212B;
   --muted: #5B6873;
   --line: #DCE2E6;
+  --muscle: #C3CCD2;
   --accent: #0B7A75;
   --accent-soft: #DDEFEE;
   --climb: #B5650F;
@@ -29,14 +30,14 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #10171D; --surface: #18222A; --fg: #E6ECEF; --muted: #9AA7B0; --line: #2A3740;
+    --bg: #10171D; --surface: #18222A; --fg: #E6ECEF; --muted: #9AA7B0; --line: #2A3740; --muscle: #3A4A55;
     --accent: #3FC1BA; --accent-soft: #163A3A; --climb: #F0A24C; --climb-soft: #3A2A17;
     --stretch: #A9ADF0; --stretch-soft: #262A4A;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #10171D; --surface: #18222A; --fg: #E6ECEF; --muted: #9AA7B0; --line: #2A3740;
+  --bg: #10171D; --surface: #18222A; --fg: #E6ECEF; --muted: #9AA7B0; --line: #2A3740; --muscle: #3A4A55;
   --accent: #3FC1BA; --accent-soft: #163A3A; --climb: #F0A24C; --climb-soft: #3A2A17;
   --stretch: #A9ADF0; --stretch-soft: #262A4A;
   color-scheme: dark;
@@ -73,10 +74,11 @@ nav button {
   background: var(--surface); color: var(--fg); cursor: pointer; min-width: 0;
 }
 nav button[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
-button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+button:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 
 section { display: grid; gap: 14px; padding-top: 16px; }
 .intro { color: var(--muted); margin: 0; font-size: .95rem; }
+.sub-h { margin: 8px 0 0; font: 800 1.25rem var(--font-display); letter-spacing: .02em; }
 .progress {
   display: flex; align-items: center; gap: 10px; font-size: .9rem; color: var(--muted);
   font-variant-numeric: tabular-nums;
@@ -109,6 +111,12 @@ section { display: grid; gap: 14px; padding-top: 16px; }
   margin-left: auto; flex: none; font: 700 1rem var(--font-display);
   font-variant-numeric: tabular-nums; white-space: nowrap;
 }
+.info-btn {
+  flex: none; align-self: center; width: 28px; height: 28px; border-radius: 50%;
+  border: 1.5px solid var(--muted); background: transparent; color: var(--muted); cursor: pointer;
+  font: italic 700 .95rem Georgia, "Times New Roman", serif; line-height: 1;
+}
+.info-btn[aria-expanded="true"] { background: var(--fg); border-color: var(--fg); color: var(--bg); }
 .note { color: var(--muted); font-size: .9rem; margin: 0; }
 .dots { display: flex; flex-wrap: wrap; gap: 8px; }
 .dot {
@@ -118,6 +126,22 @@ section { display: grid; gap: 14px; padding-top: 16px; }
 }
 .dot[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
 .climb .dot[aria-pressed="true"] { background: var(--climb); border-color: var(--climb); }
+
+.info { background: var(--bg); border-radius: 10px; padding: 12px; display: grid; gap: 10px; font-size: .93rem; }
+.info svg { width: 100%; max-width: 280px; height: auto; justify-self: center; display: block; }
+.info .m { fill: var(--muscle); }
+.info .m.p { fill: var(--accent); }
+.info .m.s { fill: var(--accent); fill-opacity: .4; }
+.info .n { fill: var(--line); }
+.info text { fill: var(--muted); font: 700 9px var(--font-display); letter-spacing: .08em; }
+.works { margin: 0; display: grid; gap: 4px; }
+.works span { display: flex; gap: 8px; align-items: baseline; }
+.works i {
+  flex: none; width: 10px; height: 10px; border-radius: 3px; background: var(--accent); display: inline-block;
+}
+.works i.s { opacity: .4; }
+.info ol { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.info a { color: var(--accent); font-weight: 600; justify-self: start; }
 
 .wt { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
 .wt input {
@@ -165,12 +189,14 @@ ul.plain { margin: 0; padding: 12px 14px 12px 32px; display: grid; gap: 6px; }
   color: var(--muted); padding-top: 3px; white-space: nowrap;
 }
 .lvl dd { margin: 0; min-width: 0; }
-.timer {
+.timer, .sw {
   justify-self: start; font: 700 .95rem var(--font-display); letter-spacing: .03em;
   font-variant-numeric: tabular-nums; padding: 9px 14px; border-radius: 8px; cursor: pointer;
   border: 1px solid var(--stretch); background: transparent; color: var(--stretch); min-width: 120px;
 }
+.sw { border-color: var(--accent); color: var(--accent); }
 .timer.running { background: var(--stretch); color: var(--bg); }
+.sw.running { background: var(--accent); color: var(--bg); }
 .timer.finished { background: var(--stretch-soft); }
 @media (prefers-reduced-motion: reduce) { .bar i { transition: none; } }
 </style>
@@ -181,7 +207,7 @@ ul.plain { margin: 0; padding: 12px 14px 12px 32px; display: grid; gap: 6px; }
     <nav role="tablist">
       <button role="tab" id="tab-a" data-view="a">Day A</button>
       <button role="tab" id="tab-b" data-view="b">Day B</button>
-      <button role="tab" id="tab-stretch" data-view="stretch">Stretch</button>
+      <button role="tab" id="tab-home" data-view="home">At home</button>
       <button role="tab" id="tab-week" data-view="week">Week</button>
       <button role="tab" id="tab-rules" data-view="rules">Rules</button>
     </nav>
@@ -198,53 +224,172 @@ const WARMUP = [
   "1–2 light sets of your first lift"
 ];
 
-// [tag, name, dose, sets, note, tracks weight]
+// [tag, name, dose, sets, note, what to log ("kg", "s" or null), info key]
 const SESSIONS = {
   a: {
     title: "Squat · Push · Lat endurance",
     blocks: [
       { label: "Superset A", sub: "60s between · 90s after pair", ex: [
-        ["A1", "Back squat (or goblet squat)", "4 × 5–6", 4, "Main leg lift", true],
-        ["A2", "Dumbbell bench press", "4 × 8", 4, "Balances climbing's pulling", true]]},
+        ["A1", "Back squat (or goblet squat)", "4 × 5–6", 4, "Main leg lift", "kg", "squat"],
+        ["A2", "Dumbbell bench press", "4 × 8", 4, "Balances climbing's pulling", "kg", "dbbench"]]},
       { label: "Superset B", sub: "60s between · 90s after pair", ex: [
-        ["B1", "Romanian deadlift", "3 × 8", 3, "Slow on the way down", true],
-        ["B2", "Chest-supported / cable row", "3 × 10", 3, "Moderate weight, posture", true]]},
+        ["B1", "Romanian deadlift", "3 × 8", 3, "Slow on the way down", "kg", "rdl"],
+        ["B2", "Chest-supported / cable row", "3 × 10", 3, "Moderate weight, posture", "kg", "row"]]},
       { label: "Superset C", sub: "60s between · 90s after pair", ex: [
-        ["C1", "Bulgarian split squat", "3 × 8/leg", 3, "Single-leg strength and balance", true],
-        ["C2", "Half-kneeling landmine press", "3 × 8/arm", 3, "Or single-arm DB overhead press", true]]},
+        ["C1", "Bulgarian split squat", "3 × 8/leg", 3, "Single-leg strength and balance", "kg", "bss"],
+        ["C2", "Half-kneeling landmine press", "3 × 8/arm", 3, "Or single-arm DB overhead press", "kg", "landmine"]]},
       { label: "Circuit D", sub: "2 rounds", ex: [
-        ["D1", "DB external rotations", "12–15", 2, "Shoulder prehab", true],
-        ["D2", "Pallof press", "10/side", 2, "Anti-rotation core", true],
-        ["D3", "Reverse wrist curls", "15", 2, "Elbow prehab", true]]},
+        ["D1", "DB external rotations", "12–15", 2, "Shoulder prehab", "kg", "extrot"],
+        ["D2", "Pallof press", "10/side", 2, "Anti-rotation core", "kg", "pallof"],
+        ["D3", "Reverse wrist curls", "15", 2, "Elbow prehab", "kg", "wristcurl"]]},
       { label: "Climbing block", climb: true, sub: "Never to failure", ex: [
-        ["E1", "Pull-ups, submax", "4 × 50–60%", 4, "Max 12 → sets of 6–7, 60s rest. Or lat pulldown 3 × 15–20", false],
-        ["E2", "Lock-off holds", "2 rounds", 2, "5–10s each at top, 90°, 120°", false],
-        ["E3", "Scapular pull-ups", "2 × 8", 2, "Straight arms, shoulder blades only", false]]}
+        ["E1", "Pull-ups, submax", "4 × 50–60%", 4, "Max 12 → sets of 6–7, 60s rest. Or lat pulldown 3 × 15–20", null, "pullup"],
+        ["E2", "Lock-off holds", "2 rounds", 2, "5–10s each at top, 90°, 120°. Log your longest top hold", "s", "lockoff"],
+        ["E3", "Scapular pull-ups", "2 × 8", 2, "Straight arms, shoulder blades only", null, "scappull"]]}
     ]
   },
   b: {
     title: "Hinge · Overhead · Forearm endurance",
     blocks: [
       { label: "Superset A", sub: "60s between · 90s after pair", ex: [
-        ["A1", "Trap bar deadlift", "4 × 5", 4, "Or regular deadlift", true],
-        ["A2", "Standing overhead press", "4 × 6", 4, "Barbell, brace hard", true]]},
+        ["A1", "Trap bar deadlift", "4 × 5", 4, "Or regular deadlift", "kg", "trapbar"],
+        ["A2", "Standing overhead press", "4 × 6", 4, "Barbell, brace hard", "kg", "ohp"]]},
       { label: "Superset B", sub: "60s between · 90s after pair", ex: [
-        ["B1", "Dips (or push-ups)", "3 × 8–12", 3, "Log added weight once bodyweight is easy", true],
-        ["B2", "Walking lunges / step-ups", "3 × 10/leg", 3, "", true]]},
+        ["B1", "Dips (or push-ups)", "3 × 8–12", 3, "Log added weight once bodyweight is easy", "kg", "dips"],
+        ["B2", "Walking lunges / step-ups", "3 × 10/leg", 3, "", "kg", "lunge"]]},
       { label: "Superset C", sub: "60s between · 90s after pair", ex: [
-        ["C1", "Nordic hamstring curl", "3 × 4–6", 3, "Or lying leg curl", false],
-        ["C2", "Face pulls", "3 × 15", 3, "Light, shoulder health", true]]},
+        ["C1", "Nordic hamstring curl", "3 × 4–6", 3, "Or lying leg curl", null, "nordic"],
+        ["C2", "Face pulls", "3 × 15", 3, "Light, shoulder health", "kg", "facepull"]]},
       { label: "Circuit D", sub: "2 rounds", ex: [
-        ["D1", "Copenhagen plank", "20–30s/side", 2, "Groin", false],
-        ["D2", "Ab wheel rollout", "8–10", 2, "Core", false],
-        ["D3", "Single-leg calf raise", "12/leg", 2, "Calves and Achilles", true]]},
+        ["D1", "Copenhagen plank", "20–30s/side", 2, "Groin", "s", "copenhagen"],
+        ["D2", "Ab wheel rollout", "8–10", 2, "Core", null, "abwheel"],
+        ["D3", "Single-leg calf raise", "12/leg", 2, "Calves and Achilles", "kg", "calf"]]},
       { label: "Climbing block", climb: true, sub: "Hard, not failing", ex: [
-        ["E1", "Hangboard repeaters", "3–5 sets", 5, "7s on / 3s off ×6 per set, 3 min rest. 20 mm+ edge, open hand or half-crimp, feet on box if needed. No board: dead hangs 20s on/10s off ×5, or farmer's carries 3 × 40–60s", false],
-        ["E2", "Band finger extensions", "2 × 20", 2, "Don't skip", false],
-        ["E3", "Reverse wrist curls", "2 × 15", 2, "Elbow protection", true]]}
+        ["E1", "Hangboard repeaters", "3–5 sets", 5, "7s on / 3s off ×6 per set, 3 min rest. 20 mm+ edge, open hand or half-crimp, feet on box if needed. No board: dead hangs 20s on/10s off ×5", null, "hangboard"],
+        ["E2", "Band finger extensions", "2 × 20", 2, "Don't skip", null, "fingerext"],
+        ["E3", "Reverse wrist curls", "2 × 15", 2, "Elbow protection", "kg", "wristcurl"]]}
     ]
   }
 };
+
+// Pull-up bar work for non-climbing days, logged in seconds
+const GRIP = [
+  ["G1", "Dead hang", "3 holds", 0, "Stop 5–10s before you'd drop. 90s rest. Use the stopwatch: your time is logged when you tap stop", "s", "deadhang"],
+  ["G2", "Scapular pull-ups", "2 × 8", 0, "Slow, pause at the top", null, "scappull"],
+  ["G3", "Active hang", "2 × 15–20s", 0, "Shoulders pulled down away from your ears the whole time", "s", "activehang"]
+];
+
+const INFO = {
+  squat: { p: ["quads", "glutes"], s: ["adductors", "lowerback", "abs"], q: "barbell back squat form",
+    steps: ["Bar on your upper back, feet shoulder-width, toes turned out slightly.", "Brace your stomach, then sit down between your hips until your thighs are at least level with your knees.", "Keep knees tracking over your toes and your chest up.", "Drive up through the whole foot."] },
+  dbbench: { p: ["chest"], s: ["shoulders", "triceps"], q: "dumbbell bench press form",
+    steps: ["Lie on the bench with dumbbells over your chest and shoulder blades squeezed together.", "Lower to chest level with elbows about 45° from your body.", "Press up and slightly together without clanging the weights."] },
+  rdl: { p: ["hamstrings", "glutes"], s: ["lowerback", "forearms"], q: "romanian deadlift form",
+    steps: ["Stand holding the bar at your hips, knees slightly bent.", "Push your hips back so the bar slides down your thighs. Keep your back flat.", "Stop when you feel a strong hamstring stretch, around mid-shin.", "Squeeze your glutes to stand back up."] },
+  row: { p: ["upperback", "lats"], s: ["biceps", "shoulders"], q: "chest supported dumbbell row form",
+    steps: ["Chest on an incline bench (or sit at the cable row), arms long.", "Pull your elbows back toward your hips and squeeze your shoulder blades.", "Lower slowly to a full stretch."] },
+  bss: { p: ["quads", "glutes"], s: ["adductors", "hamstrings"], q: "bulgarian split squat form",
+    steps: ["Back foot laces-down on a bench, front foot about a stride ahead. Hold dumbbells at your sides.", "Lower straight down until your back knee is near the floor.", "Lean your chest slightly forward and keep the front knee over your toes.", "Push through the front foot to stand."] },
+  landmine: { p: ["shoulders"], s: ["chest", "triceps", "abs"], q: "half kneeling landmine press form",
+    steps: ["Kneel on the same side as the pressing arm, other foot forward.", "Hold the end of the bar at your shoulder.", "Press up and forward until your arm is straight, ribs down.", "Lower under control."] },
+  extrot: { p: ["shoulders"], s: ["upperback"], q: "side lying dumbbell external rotation",
+    steps: ["Lie on your side, top elbow bent 90° and tucked against your ribs.", "Rotate the forearm up toward the ceiling, keeping the elbow pinned.", "Lower slowly. Use a light weight; this works the small rotator cuff muscles."] },
+  pallof: { p: ["abs", "obliques"], s: [], q: "pallof press form",
+    steps: ["Stand side-on to a cable or band at chest height, holding the handle at your chest.", "Press it straight out in front and resist being twisted round.", "Hold 2s, bring it back, repeat. Then face the other way."] },
+  wristcurl: { p: ["forearms"], s: [], q: "reverse wrist curl dumbbell",
+    steps: ["Rest your forearm on your thigh or a bench, palm down, light dumbbell in hand.", "Lift the back of your hand up as far as it goes.", "Lower slowly. This trains the muscles that balance out all the gripping from climbing."] },
+  pullup: { p: ["lats"], s: ["biceps", "upperback", "forearms"], q: "pull up form",
+    steps: ["Hang with hands just wider than your shoulders.", "Pull your shoulder blades down first, then pull your chest toward the bar.", "Lower all the way under control."] },
+  lockoff: { p: ["lats", "biceps"], s: ["forearms", "upperback"], q: "lock off training climbing",
+    steps: ["Pull up to the top and hold with your chin over the bar.", "Lower to elbows at 90° and hold, then to 120° and hold.", "Keep your shoulders down and your body still."] },
+  scappull: { p: ["upperback", "lats"], s: ["forearms"], q: "scapular pull up",
+    steps: ["Hang with straight arms.", "Without bending your elbows, pull your shoulder blades down and back so your body rises a few centimetres.", "Pause, then lower slowly."] },
+  trapbar: { p: ["glutes", "hamstrings", "quads"], s: ["lowerback", "traps", "forearms"], q: "trap bar deadlift form",
+    steps: ["Stand in the middle of the bar and grab the handles.", "Hips down, chest up, back flat.", "Push the floor away and stand tall.", "Lower by pushing your hips back first."] },
+  ohp: { p: ["shoulders", "triceps"], s: ["traps", "abs"], q: "standing barbell overhead press form",
+    steps: ["Bar on your front shoulders, hands just outside them.", "Squeeze your glutes and brace your stomach.", "Press straight up, moving your head back, then through once the bar passes.", "Lock out overhead and lower to your collarbones."] },
+  dips: { p: ["chest", "triceps"], s: ["shoulders"], q: "parallel bar dips form",
+    steps: ["Support yourself on the bars with straight arms.", "Lean slightly forward and lower until your upper arms are about level, or as far as your shoulders are comfortable.", "Press back up. Use push-ups or a band if dips are too hard."] },
+  lunge: { p: ["quads", "glutes"], s: ["adductors", "hamstrings", "calves"], q: "walking lunge form",
+    steps: ["Take a long step forward and lower until your back knee is near the floor.", "Keep your torso tall.", "Push through the front heel and step straight into the next lunge."] },
+  nordic: { p: ["hamstrings"], s: ["glutes", "calves"], q: "nordic hamstring curl beginner",
+    steps: ["Kneel with your ankles anchored under something solid.", "Keep a straight line from knees to head.", "Lower forward as slowly as you can, then catch yourself with your hands.", "Push off the floor to come back up."] },
+  facepull: { p: ["shoulders", "upperback"], s: ["traps"], q: "face pull form",
+    steps: ["Rope at head height. Hold the ends with thumbs pointing back.", "Pull toward your face with elbows high, pulling the rope apart.", "Finish with your hands beside your ears, then return slowly."] },
+  copenhagen: { p: ["adductors"], s: ["obliques", "abs"], q: "copenhagen plank beginner",
+    steps: ["Side plank on your forearm with your top knee on a bench (easier) or top foot on it (harder).", "Lift your hips so your body is in a straight line.", "Hold. Your inner thigh on the top leg does the work."] },
+  abwheel: { p: ["abs"], s: ["lats", "shoulders"], q: "ab wheel rollout kneeling form",
+    steps: ["Kneel with the wheel under your shoulders.", "Roll forward slowly, keeping your back flat and not letting your hips sag.", "Go only as far as you can hold that position, then pull back with your stomach."] },
+  calf: { p: ["calves"], s: [], q: "single leg calf raise form",
+    steps: ["Stand on one foot on the edge of a step, holding something for balance.", "Lower your heel below the step.", "Rise up as high as you can and pause 1s at the top."] },
+  hangboard: { p: ["forearms"], s: ["lats", "shoulders"], q: "hangboard repeaters beginner",
+    steps: ["Hang from a 20 mm or bigger edge with an open hand or half-crimp.", "Arms almost straight, shoulders engaged (not shrugged up to your ears).", "7s on, 3s off, six times is one set. Put your feet on a box to take weight off if needed."] },
+  fingerext: { p: ["forearms"], s: [], q: "rubber band finger extensions",
+    steps: ["Put a rubber band around your fingers and thumb.", "Open your hand wide against the band.", "Close slowly. This balances the gripping muscles and helps protect your elbows."] },
+  deadhang: { p: ["forearms"], s: ["lats", "shoulders"], q: "dead hang pull up bar",
+    steps: ["Grab the bar overhand, hands shoulder-width.", "Hang with straight arms, shoulders slightly engaged rather than fully relaxed.", "If it's too hard, keep your toes on a chair to take some weight."] },
+  activehang: { p: ["upperback", "lats"], s: ["forearms"], q: "active hang pull up bar",
+    steps: ["Hang with straight arms.", "Pull your shoulders down away from your ears, as in a scap pull-up, and hold that position.", "Breathe and keep your body still."] }
+};
+
+const MUSCLE_NAMES = {
+  chest: "Chest", shoulders: "Shoulders", biceps: "Biceps", forearms: "Forearms", abs: "Abs",
+  obliques: "Obliques", quads: "Quads", adductors: "Inner thighs", traps: "Traps",
+  upperback: "Upper back", lats: "Lats", triceps: "Triceps", lowerback: "Lower back",
+  glutes: "Glutes", hamstrings: "Hamstrings", calves: "Calves"
+};
+
+// Front figure centred on x=60, back figure on x=180. [muscle or null, element, attributes]
+const BODY = [
+  [null, "circle", "cx=60 cy=16 r=10"], [null, "rect", "x=55 y=25 width=10 height=8"],
+  ["shoulders", "ellipse", "cx=40 cy=40 rx=8 ry=7"], ["shoulders", "ellipse", "cx=80 cy=40 rx=8 ry=7"],
+  ["chest", "ellipse", "cx=51 cy=46 rx=9 ry=7.5"], ["chest", "ellipse", "cx=69 cy=46 rx=9 ry=7.5"],
+  ["biceps", "ellipse", "cx=35 cy=60 rx=5 ry=10"], ["biceps", "ellipse", "cx=85 cy=60 rx=5 ry=10"],
+  ["forearms", "ellipse", "cx=31 cy=84 rx=4.5 ry=12"], ["forearms", "ellipse", "cx=89 cy=84 rx=4.5 ry=12"],
+  [null, "circle", "cx=30 cy=100 r=3.5"], [null, "circle", "cx=90 cy=100 r=3.5"],
+  ["obliques", "rect", "x=44 y=57 width=8 height=25 rx=3"], ["obliques", "rect", "x=68 y=57 width=8 height=25 rx=3"],
+  ["abs", "rect", "x=53 y=55 width=14 height=31 rx=4"],
+  [null, "rect", "x=45 y=87 width=30 height=10 rx=4"],
+  ["quads", "ellipse", "cx=50 cy=119 rx=7 ry=20"], ["quads", "ellipse", "cx=70 cy=119 rx=7 ry=20"],
+  ["adductors", "ellipse", "cx=57.4 cy=106 rx=2.6 ry=10"], ["adductors", "ellipse", "cx=62.6 cy=106 rx=2.6 ry=10"],
+  [null, "circle", "cx=50 cy=142 r=4"], [null, "circle", "cx=70 cy=142 r=4"],
+  [null, "ellipse", "cx=50 cy=163 rx=4.5 ry=15"], [null, "ellipse", "cx=70 cy=163 rx=4.5 ry=15"],
+  [null, "ellipse", "cx=48 cy=181 rx=5.5 ry=3"], [null, "ellipse", "cx=72 cy=181 rx=5.5 ry=3"],
+
+  [null, "circle", "cx=180 cy=16 r=10"], [null, "rect", "x=175 y=25 width=10 height=6"],
+  ["traps", "path", "d='M170,30 L190,30 L197,38 L187,50 L173,50 L163,38 Z'"],
+  ["shoulders", "ellipse", "cx=160 cy=41 rx=8 ry=7"], ["shoulders", "ellipse", "cx=200 cy=41 rx=8 ry=7"],
+  ["lats", "path", "d='M164,47 L172,52 L172,77 L166,73 Q161,60 164,47 Z'"],
+  ["lats", "path", "d='M196,47 L188,52 L188,77 L194,73 Q199,60 196,47 Z'"],
+  ["upperback", "rect", "x=173 y=51 width=14 height=12 rx=3"],
+  ["lowerback", "rect", "x=173 y=65 width=14 height=20 rx=3"],
+  ["triceps", "ellipse", "cx=155 cy=60 rx=5 ry=10"], ["triceps", "ellipse", "cx=205 cy=60 rx=5 ry=10"],
+  ["forearms", "ellipse", "cx=151 cy=84 rx=4.5 ry=12"], ["forearms", "ellipse", "cx=209 cy=84 rx=4.5 ry=12"],
+  [null, "circle", "cx=150 cy=100 r=3.5"], [null, "circle", "cx=210 cy=100 r=3.5"],
+  ["glutes", "ellipse", "cx=173 cy=95 rx=8 ry=8"], ["glutes", "ellipse", "cx=187 cy=95 rx=8 ry=8"],
+  ["hamstrings", "ellipse", "cx=171 cy=122 rx=7 ry=17"], ["hamstrings", "ellipse", "cx=189 cy=122 rx=7 ry=17"],
+  [null, "circle", "cx=171 cy=143 r=4"], [null, "circle", "cx=189 cy=143 r=4"],
+  ["calves", "ellipse", "cx=171 cy=162 rx=6 ry=14"], ["calves", "ellipse", "cx=189 cy=162 rx=6 ry=14"],
+  [null, "ellipse", "cx=169 cy=181 rx=5.5 ry=3"], [null, "ellipse", "cx=191 cy=181 rx=5.5 ry=3"]
+];
+
+function bodySVG(info) {
+  const shapes = BODY.map(([m, el, attrs]) => {
+    const cls = !m ? "n" : info.p.includes(m) ? "m p" : info.s.includes(m) ? "m s" : "m";
+    return `<${el} class="${cls}" ${attrs.replace(/(\w+)=(?!['"])([^\s]+)/g, '$1="$2"').replace(/'/g, '"')}/>`;
+  }).join("");
+  return `<svg viewBox="0 0 240 200" role="img" aria-label="Muscle map">${shapes}
+    <text x="60" y="197" text-anchor="middle">FRONT</text><text x="180" y="197" text-anchor="middle">BACK</text></svg>`;
+}
+
+function infoHTML(key, name) {
+  const info = INFO[key];
+  const list = arr => arr.map(m => MUSCLE_NAMES[m]).join(", ");
+  return `${bodySVG(info)}
+    <p class="works"><span><i></i><b>Main:</b> ${list(info.p)}</span>${info.s.length ? `<span><i class="s"></i><b>Also:</b> ${list(info.s)}</span>` : ""}</p>
+    <ol>${info.steps.map(s => `<li>${esc(s)}</li>`).join("")}</ol>
+    <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(info.q)}" target="_blank" rel="noopener">Watch a demo on YouTube ↗</a>`;
+}
 
 // [name, seconds, per side, start here, progress to]
 const STRETCHES = [
@@ -287,20 +432,20 @@ const STRETCHES = [
 ];
 
 const WEEK = [
-  ["Mon", "Rest + stretch", "Fresh legs and fingers for bouldering", "easy"],
+  ["Mon", "Rest + stretch + grip", "Fresh legs and fingers for bouldering", "easy"],
   ["Tue", "Bouldering", "Optional 4x4s at the end", "climbday"],
-  ["Wed", "Easy swim", "20–30 min. Recovery between climbs", "easy"],
+  ["Wed", "Easy swim + grip", "20–30 min swim. Recovery between climbs", "easy"],
   ["Thu", "Sport climbing", "Laps or ARC for endurance", "climbday"],
   ["Fri", "Gym A", "Squat, push, lat endurance. Nothing to climb tomorrow", "gym"],
-  ["Sat", "Rest + stretch", "Or a second easy swim", "easy"],
+  ["Sat", "Rest + stretch + grip", "Or a second easy swim", "easy"],
   ["Sun", "Gym B", "Hangboard is 48h before bouldering", "gym"]
 ];
 
 const RULES = [
   ["Effort", ["Finish most sets with 2–3 reps in the tank.", "Weeks 1–2: go lighter than you think."]],
-  ["Logging weights", ["Type the weight you used in the box under each lift. It's saved until you change it.", "When you get 6 reps on every set at that weight (or the top of the rep range), tap ↑ Next time.", "Next session, put the new weight in. The box shows what it was before."]],
-  ["Progression", ["Go up by the smallest jump: 2.5 kg on barbells, 1–2 kg on dumbbells.", "Climbing block: add 1 rep per set or 1 set every 2 weeks.", "No added weight on the hangboard for the first couple of months.", "Every 6–8 weeks: a lighter week with about half the sets."]],
-  ["Protect your climbing", ["No gym the day before a climbing day.", "Heavy climbing week: drop the Day B climbing block.", "Sharp pain in fingers, wrists or elbows means stop. Pump is fine."]],
+  ["Logging", ["Type the weight (kg) or hold time (seconds) in the box under each exercise. It's saved until you change it.", "When you get 6 reps on every set at that weight (or the top of the rep range), tap ↑ Next time.", "Next session, put the new number in. The box shows what it was before."]],
+  ["Progression", ["Go up by the smallest jump: 2.5 kg on barbells, 1–2 kg on dumbbells.", "Holds and hangs: add 5s once every set feels comfortable.", "Climbing block: add 1 rep per set or 1 set every 2 weeks.", "No added weight on the hangboard for the first couple of months.", "Every 6–8 weeks: a lighter week with about half the sets."]],
+  ["Protect your climbing", ["No gym the day before a climbing day.", "Home grip work only on non-climbing, non-gym days.", "Heavy climbing week: drop the Day B climbing block.", "Sharp pain in fingers, wrists or elbows means stop. Pump is fine."]],
   ["Swaps", ["No trap bar → deadlift or RDL", "No landmine → single-arm DB press", "No Nordic setup → stability-ball leg curl", "No cables → resistance bands"]]
 ];
 
@@ -315,37 +460,48 @@ const main = document.getElementById("main");
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const fmtDate = iso => new Date(iso).toLocaleDateString(undefined, { day: "numeric", month: "short" });
 
-function weightRow(id, tag) {
-  const k = `${id}-${tag}`;
+function wasText(w, unit) {
+  const parts = [];
+  if (w.prev != null && w.prev !== "") parts.push(`was ${w.prev}${unit === "s" ? "s" : " kg"} · ${fmtDate(w.date)}`);
+  else if (w.date) parts.push(`set ${fmtDate(w.date)}`);
+  if (unit === "s" && w.best != null) parts.push(`best ${w.best}s`);
+  return parts.join(" · ");
+}
+
+function logRow(k, unit) {
   const w = weights[k] || {};
-  const was = w.prev != null && w.prev !== "" ? `was ${esc(w.prev)} kg · ${fmtDate(w.date)}`
-    : w.date ? `set ${fmtDate(w.date)}` : "";
+  const secs = unit === "s";
   return `<div class="wt">
-    <input id="w-${k}" data-w="${k}" type="number" inputmode="decimal" step="0.5" min="0" placeholder="–" value="${w.kg != null ? esc(w.kg) : ""}" aria-label="Weight in kg">
-    <span class="unit">kg</span><span class="was">${was}</span>
+    <input id="w-${k}" data-w="${k}" data-unit="${unit}" type="number" inputmode="${secs ? "numeric" : "decimal"}" step="${secs ? 1 : 0.5}" min="0" placeholder="–" value="${w.kg != null ? esc(w.kg) : ""}" aria-label="${secs ? "Hold time in seconds" : "Weight in kg"}">
+    <span class="unit">${secs ? "sec" : "kg"}</span><span class="was">${esc(wasText(w, unit))}</span>
     <button class="up" data-up="${k}" aria-pressed="${!!w.up}">↑ Next time</button>
   </div>`;
 }
 
+function exHTML(scope, [tag, name, dose, sets, note, unit, info], extra = "") {
+  const k = `${scope}-${tag}`;
+  let dots = "";
+  for (let i = 0; i < sets; i++) {
+    const dk = `${k}-${i}`;
+    dots += `<button class="dot" data-k="${dk}" aria-pressed="${!!done[dk]}" aria-label="${esc(name)} set ${i + 1}">${i + 1}</button>`;
+  }
+  const up = unit && weights[k] && weights[k].up;
+  return `<div class="ex${up ? " going-up" : ""}">
+    <div class="ex-top"><span class="tag">${tag}</span><span class="name">${esc(name)}</span><span class="dose">${dose}</span>
+      <button class="info-btn" data-info="${info}" data-name="${esc(name)}" aria-expanded="false" aria-label="How to do ${esc(name)}">i</button></div>
+    <div class="info" hidden></div>
+    ${note ? `<p class="note">${esc(note)}</p>` : ""}${extra}${unit ? logRow(k, unit) : ""}${sets ? `<div class="dots">${dots}</div>` : ""}</div>`;
+}
+
 function renderSession(id) {
   const s = SESSIONS[id];
-  let html = `<section><p class="intro">${s.title}. Tap a circle after each set and log the weight you used.</p>
+  let html = `<section><p class="intro">${s.title}. Tap a circle after each set, log what you used, and tap <b>i</b> for how-to and muscles.</p>
     <div class="progress"><div class="bar"><i id="bar"></i></div><span id="count"></span></div>
     <div class="block"><div class="block-head"><h2>Warm-up</h2><small>~10 min</small></div>
     <ul class="plain">${WARMUP.map(w => `<li>${esc(w)}</li>`).join("")}</ul></div>`;
   s.blocks.forEach(b => {
-    html += `<div class="block${b.climb ? " climb" : ""}"><div class="block-head"><h2>${b.label}</h2><small>${b.sub}</small></div>`;
-    b.ex.forEach(([tag, name, dose, sets, note, tracked]) => {
-      let dots = "";
-      for (let i = 0; i < sets; i++) {
-        const k = `${id}-${tag}-${i}`;
-        dots += `<button class="dot" data-k="${k}" aria-pressed="${!!done[k]}" aria-label="${esc(name)} set ${i + 1}">${i + 1}</button>`;
-      }
-      const up = tracked && weights[`${id}-${tag}`] && weights[`${id}-${tag}`].up;
-      html += `<div class="ex${up ? " going-up" : ""}"><div class="ex-top"><span class="tag">${tag}</span><span class="name">${esc(name)}</span><span class="dose">${dose}</span></div>
-        ${note ? `<p class="note">${esc(note)}</p>` : ""}${tracked ? weightRow(id, tag) : ""}<div class="dots">${dots}</div></div>`;
-    });
-    html += `</div>`;
+    html += `<div class="block${b.climb ? " climb" : ""}"><div class="block-head"><h2>${b.label}</h2><small>${b.sub}</small></div>
+      ${b.ex.map(ex => exHTML(id, ex)).join("")}</div>`;
   });
   html += `<button class="reset" id="reset">Clear ticks for this day</button></section>`;
   main.innerHTML = html;
@@ -353,7 +509,7 @@ function renderSession(id) {
   const reset = document.getElementById("reset");
   reset.addEventListener("click", () => {
     if (!reset.classList.contains("confirm")) {
-      reset.classList.add("confirm"); reset.textContent = "Tap again to clear (weights stay)";
+      reset.classList.add("confirm"); reset.textContent = "Tap again to clear (logs stay)";
       setTimeout(() => { reset.classList.remove("confirm"); reset.textContent = "Clear ticks for this day"; }, 3000);
       return;
     }
@@ -363,16 +519,25 @@ function renderSession(id) {
 }
 
 function updateProgress() {
+  const bar = document.getElementById("bar"); if (!bar) return;
   const dots = main.querySelectorAll(".dot");
   const n = [...dots].filter(d => d.getAttribute("aria-pressed") === "true").length;
-  document.getElementById("bar").style.width = (dots.length ? n / dots.length * 100 : 0) + "%";
+  bar.style.width = (dots.length ? n / dots.length * 100 : 0) + "%";
   document.getElementById("count").textContent = `${n}/${dots.length} sets`;
 }
 
 const fmtTime = s => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
-function renderStretch() {
-  main.innerHTML = `<section><p class="intro">About 20 minutes on a yoga mat. Use it on rest days or after a heavy session. Start with the first version of each stretch; the second is where you're heading.</p>
+function renderHome() {
+  main.innerHTML = `<section>
+    <h2 class="sub-h">Grip on the pull-up bar</h2>
+    <p class="intro">About 5 minutes, light. Do it on Mon, Wed and Sat, not on climbing or gym days. It should feel like 5 out of 10, never a full pump.</p>
+    <div class="block"><div class="block-head"><h2>Daily grip</h2><small>~5 min</small></div>
+      ${GRIP.map(ex => exHTML("home", ex, ex[6] === "deadhang" ? `<button class="sw" data-sw="home-${ex[0]}">Start hang</button>` : "")).join("")}
+    </div>
+
+    <h2 class="sub-h">Stretch routine</h2>
+    <p class="intro">About 20 minutes on a yoga mat. Use it on rest days or after a heavy session. Start with the first version of each stretch; the second is where you're heading.</p>
     <div class="card"><h2>How to stretch</h2><ul>
       <li>Aim for a 4–6 out of 10 pull. Never pain.</li>
       <li>Breathe out slowly as you ease in. No bouncing.</li>
@@ -420,6 +585,45 @@ function startTimer(btn) {
   }, 1000) };
 }
 
+// Stopwatch for hangs: counts up, and logs the time when stopped
+let sw = null;
+function stopStopwatch(save) {
+  if (!sw) return;
+  clearInterval(sw.id);
+  const secs = Math.round((Date.now() - sw.start) / 1000);
+  sw.btn.classList.remove("running");
+  sw.btn.textContent = save ? `${secs}s logged · start again` : "Start hang";
+  const input = save && sw.btn.closest(".ex").querySelector("input[data-w]");
+  sw = null;
+  if (input && secs > 0) { input.value = secs; saveLog(input); }
+}
+function toggleStopwatch(btn) {
+  if (sw) { stopStopwatch(sw.btn === btn); return; }
+  sw = { btn, start: Date.now(), id: setInterval(() => {
+    btn.textContent = `${fmtTime(Math.floor((Date.now() - sw.start) / 1000))} · tap when you drop`;
+  }, 250) };
+  btn.classList.add("running");
+  btn.textContent = "0:00 · tap when you drop";
+}
+
+function saveLog(input) {
+  const k = input.dataset.w, unit = input.dataset.unit;
+  const w = weights[k] || (weights[k] = {});
+  const val = input.value.trim();
+  if (val === String(w.kg ?? "")) return;
+  w.prev = w.kg ?? null;
+  w.kg = val === "" ? null : val;
+  w.date = new Date().toISOString();
+  w.up = false;
+  if (unit === "s" && val !== "") w.best = Math.max(+w.best || 0, +val);
+  store(WKEY, weights);
+  // Update this row in place so focus can move straight to the next box
+  const ex = input.closest(".ex");
+  ex.classList.remove("going-up");
+  ex.querySelector(".up").setAttribute("aria-pressed", "false");
+  ex.querySelector(".was").textContent = wasText(w, unit);
+}
+
 function renderWeek() {
   main.innerHTML = `<section><p class="intro">Built around bouldering on Tuesday and sport climbing on Thursday.</p>
     <div class="days">${WEEK.map(([d, what, note, kind]) =>
@@ -429,8 +633,9 @@ function renderWeek() {
       <li>Gym B has the hangboard, so it sits on Sunday with a full rest day before bouldering.</li>
       <li>Gym A is the day after sport climbing. Its main work is legs and pushing, which climbing doesn't tire.</li>
       <li>The swim goes between the two climbs. Keep it easy so it helps recovery.</li>
+      <li>Home grip work goes on the three days with no climbing or gym, so your fingers get light work without stacking load.</li>
     </ul></div>
-    <div class="card"><h2>Short week?</h2><p>Only one gym day: do Day A on Friday. Feeling beaten up: swap a gym day for the stretch routine.</p></div></section>`;
+    <div class="card"><h2>Short week?</h2><p>Only one gym day: do Day A on Friday. Feeling beaten up: swap a gym day for the stretch routine and skip the grip work.</p></div></section>`;
 }
 
 function renderRules() {
@@ -439,14 +644,15 @@ function renderRules() {
 }
 
 let current = "a";
-const VIEWS = ["a", "b", "stretch", "week", "rules"];
+const VIEWS = ["a", "b", "home", "week", "rules"];
 function show(view) {
+  if (view === "stretch") view = "home";
   if (!VIEWS.includes(view)) view = "a";
-  stopTimer();
+  stopTimer(); stopStopwatch(false);
   current = view;
   document.querySelectorAll("nav button").forEach(b => b.setAttribute("aria-selected", b.dataset.view === view));
   if (view === "a" || view === "b") renderSession(view);
-  else if (view === "stretch") renderStretch();
+  else if (view === "home") renderHome();
   else if (view === "week") renderWeek();
   else renderRules();
   try { localStorage.setItem(KEY + "-tab", view); } catch (e) {}
@@ -465,6 +671,15 @@ main.addEventListener("click", e => {
     store(KEY, done); updateProgress();
     return;
   }
+  const ib = e.target.closest(".info-btn");
+  if (ib) {
+    const panel = ib.closest(".ex").querySelector(".info");
+    const open = ib.getAttribute("aria-expanded") !== "true";
+    if (open && !panel.innerHTML) panel.innerHTML = infoHTML(ib.dataset.info, ib.dataset.name);
+    panel.hidden = !open;
+    ib.setAttribute("aria-expanded", open);
+    return;
+  }
   const u = e.target.closest(".up");
   if (u) {
     const k = u.dataset.up;
@@ -475,26 +690,13 @@ main.addEventListener("click", e => {
     store(WKEY, weights);
     return;
   }
+  const s = e.target.closest(".sw");
+  if (s) { toggleStopwatch(s); return; }
   const t = e.target.closest(".timer");
   if (t) startTimer(t);
 });
 main.addEventListener("change", e => {
-  const input = e.target.closest("input[data-w]"); if (!input) return;
-  const k = input.dataset.w;
-  const w = weights[k] || (weights[k] = {});
-  const val = input.value.trim();
-  if (val === String(w.kg ?? "")) return;
-  w.prev = w.kg ?? null;
-  w.kg = val === "" ? null : val;
-  w.date = new Date().toISOString();
-  w.up = false;
-  store(WKEY, weights);
-  // Update this row in place so focus can move straight to the next box
-  const ex = input.closest(".ex");
-  ex.classList.remove("going-up");
-  ex.querySelector(".up").setAttribute("aria-pressed", "false");
-  ex.querySelector(".was").textContent = w.prev != null && w.prev !== ""
-    ? `was ${w.prev} kg · ${fmtDate(w.date)}` : `set ${fmtDate(w.date)}`;
+  const input = e.target.closest("input[data-w]"); if (input) saveLog(input);
 });
 
 let start = location.hash.slice(1);
